@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using HotelListing.API.Contracts;
 using HotelListing.API.Data;
+using HotelListing.API.Models;
 using HotelListing.API.Models.Country;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelListing.API.Controllers
@@ -24,14 +26,23 @@ namespace HotelListing.API.Controllers
             this.countriesRepository = countriesRepository;
         }
 
-        // GET: api/Countries
-        [HttpGet]
+        // GET: api/Countries/GetAll
+        [HttpGet("GetAll")]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
         {
 
-            var countries = await countriesRepository.GetAllsync();
-            var records = mapper.Map<IEnumerable<GetCountryDto>>(countries);
-            return Ok(records);
+            var countries = await countriesRepository.GetAllsync<GetCountryDto>();
+            return Ok(countries);
+        }
+
+        // GET: api/Countries/?StartIndex=0&pagesize=25&pageNumber=1
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<GetCountryDto>>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
+        {
+
+            var pagedCountriesResult = await countriesRepository.GetAllAsync<GetCountryDto>(queryParameters);
+            return Ok(pagedCountriesResult);
         }
 
         // GET: api/Countries/5

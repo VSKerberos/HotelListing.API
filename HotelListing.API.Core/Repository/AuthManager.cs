@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HotelListing.API.Contracts;
+using HotelListing.API.Core.Contracts;
 using HotelListing.API.Data;
 using HotelListing.API.Models.Users;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace HotelListing.API.Repository
+namespace HotelListing.API.Core.Repository
 {
     public class AuthManager : IAuthManager
     {
@@ -62,6 +62,7 @@ namespace HotelListing.API.Repository
 
         }
 
+
         public async Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto)
         {
             user = mapper.Map<ApiUser>(userDto);
@@ -76,6 +77,8 @@ namespace HotelListing.API.Repository
 
             return result.Errors;
         }
+
+      
 
         public async Task<AuthResponseDto> VerifyRefreshToken(AuthResponseDto request)
         {
@@ -105,6 +108,8 @@ namespace HotelListing.API.Repository
             await userManager.UpdateSecurityStampAsync(user);
             return null;
         }
+
+    
 
         private async Task<string> GenerateToken()
         {
